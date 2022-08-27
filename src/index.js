@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import logoImg from './assets/logo.png';
-import grama0 from './assets/fundo_grama_0.jpg';
+import grama0 from './assets/fundo_grama_0_tijolinhos.jpg';
+import boneca from './assets/boneca.png';
 
 class MyGame extends Phaser.Scene
 {
@@ -13,12 +14,15 @@ class MyGame extends Phaser.Scene
     {
         this.load.image('logo', logoImg);
         this.load.image('grama0', grama0);
+        this.load.image('boneca', boneca);
     }
       
     create ()
     {
-        const logo = this.add.image(400, 300, 'grama0');
-      
+        const fundo_grama = this.add.image(400, 300, 'grama0');
+        const boneca = this.add.image(100, 500, 'boneca');
+
+        
         // this.tweens.add({
         //     targets: logo,
         //     y: 450,
@@ -27,6 +31,19 @@ class MyGame extends Phaser.Scene
         //     yoyo: true,
         //     loop: -1
         // });
+    }
+    update() {
+        // this.player.x = game.input.x;
+        // this.player.y = game.input.y;
+        var cursors = this.input.keyboard.createCursorKeys();
+        var player = {};
+        if (cursors.left.isDown)
+        {
+            console.log("aqui");
+            boneca.setVelocityX(-160);
+        
+            boneca.anims.play('left', true);
+        }
     }
 }
 

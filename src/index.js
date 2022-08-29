@@ -25,46 +25,58 @@ var plano = "terra";
 
 function preload ()
 {
+    // Fundo
     this.load.image('terra', 'src/assets/terra.jpg');
     this.load.image('sky', 'src/assets/sky.jpg');
+    this.load.image('estrelas', 'src/assets/estrelas.jpg');
     this.load.image('espaco', 'src/assets/espaco.jpg');
-    this.load.image('ground', 'src/assets/platform.png');
+    // Plataformas
+    this.load.image('ground', 'src/assets/platform_tijolinho.png');
+    this.load.image('ground_nuvem', 'src/assets/gound_nuvem.png');
+    this.load.image('nuvem', 'src/assets/nuvem.png');
+    this.load.image('satelite', 'src/assets/satelite.png');
+    this.load.image('foguete', 'src/assets/foguete.png');
+    this.load.image('ground_planeta', 'src/assets/gound_planeta.png');
+    this.load.image('planeta', 'src/assets/planeta.png');
+    // Premiação
     this.load.image('star', 'src/assets/star.png');
     // this.load.image('bomb', 'assets/bomb.png');
-    this.load.spritesheet('dude','src/assets/dude.png',{ frameWidth: 32, frameHeight: 48 });
+    // Bonequinho
+    this.load.spritesheet('personagem','src/assets/personagem.png',{ frameWidth: 32, frameHeight: 48 });
 }
 
 function create ()
 {
     this.add.image(400, 300, 'terra');
 
-    this.platforms = this.physics.add.staticGroup();
-    this.platforms.create(400, 568, 'ground').setScale(2).refreshBody();
-    this.platforms.create(600, 400, 'ground');
-    this.platforms.create(50, 250, 'ground');
-    this.platforms.create(750, 220, 'ground');
+    this.platform_tijolinhos = this.physics.add.staticGroup();
+    this.platform_tijolinhos.create(400, 568, 'ground').setScale(2).refreshBody();
+    this.platform_tijolinhos.create(600, 400, 'ground');
+    this.platform_tijolinhos.create(50, 220, 'ground');
+    this.platform_tijolinhos.create(800, 250, 'ground');
 
-    this.player = this.physics.add.sprite(100, 450, 'dude');
+
+    this.player = this.physics.add.sprite(100, 450, 'personagem');
     this.player.setBounce(0.2);
     this.player.setCollideWorldBounds(true);
-    this.physics.add.collider(this.player, this.platforms);
+    this.physics.add.collider(this.player, this.platform_tijolinhos);
 
     this.anims.create({
         key: 'left',
-        frames: this.anims.generateFrameNumbers('dude', { start: 0, end: 3 }),
+        frames: this.anims.generateFrameNumbers('personagem', { start: 0, end: 3 }),
         frameRate: 10,
         repeat: -1
     });
 
     this.anims.create({
         key: 'turn',
-        frames: [ { key: 'dude', frame: 4 } ],
+        frames: [ { key: 'personagem', frame: 4 } ],
         frameRate: 20
     });
 
     this.anims.create({
         key: 'right',
-        frames: this.anims.generateFrameNumbers('dude', { start: 5, end: 8 }),
+        frames: this.anims.generateFrameNumbers('personagem', { start: 5, end: 8 }),
         frameRate: 10,
         repeat: -1
     });
@@ -81,7 +93,7 @@ function create ()
     
     });
     scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
-    this.physics.add.collider(this.stars, this.platforms);
+    this.physics.add.collider(this.stars, this.platform_tijolinhos);
     this.physics.add.overlap(this.player, this.stars,collectStar, null, this);
 
    
@@ -93,43 +105,111 @@ function collectStar (player, star)
     star.disableBody(true, true);
     score += 10;
     scoreText.setText('Score: ' + score);
-    console.log(plano);
-    if(this.player.y === 180 && plano != 'espaco'){
-        if(plano === "terra"){
+    console.log('Plano:',plano);
+    console.log('jogador:',this.player);
+
+    if(score === 120){
+        if(plano != 'espaco' && plano === "terra"){
+            score = 0;
             plano = "sky";
             this.add.image(400, 300, 'sky');
-        }else if(plano === "sky"){
+            this.platform_tijolinhos = this.physics.add.staticGroup();
+            this.platform_tijolinhos.create(400, 568, 'ground_nuvem').setScale(2).refreshBody();
+            this.platform_tijolinhos.create(500, 400, 'nuvem');
+            this.platform_tijolinhos.create(50, 250, 'nuvem');
+            this.platform_tijolinhos.create(750, 220, 'nuvem');
+
+            this.player = this.physics.add.sprite(100, 450, 'personagem');
+            this.player.setBounce(0.2);
+            this.player.setCollideWorldBounds(true);
+            this.physics.add.collider(this.player, this.platform_tijolinhos);
+
+        }else
+        if(plano != 'espaco' &&  plano === "sky"){
+            score = 0;
+            plano = "estrelas";
+            this.add.image(400, 300, 'estrelas');
+            this.platform_tijolinhos = this.physics.add.staticGroup();
+            this.platform_tijolinhos.create(400, 568, 'satelite').setScale(2).refreshBody();
+            this.platform_tijolinhos.create(400, 400, 'foguete');
+            this.platform_tijolinhos.create(100, 250, 'foguete');
+            this.platform_tijolinhos.create(750, 220, 'foguete');
+
+            this.player = this.physics.add.sprite(100, 450, 'personagem');
+            this.player.setBounce(0.2);
+            this.player.setCollideWorldBounds(true);
+            this.physics.add.collider(this.player, this.platform_tijolinhos);
+        }else     
+        if(plano != 'espaco' &&  plano === "estrelas"){
             plano = "espaco";
             this.add.image(400, 300, 'espaco');
+
+            this.platform_tijolinhos = this.physics.add.staticGroup();
+            this.platform_tijolinhos.create(400, 568, 'ground_planeta').setScale(2).refreshBody();
+            this.platform_tijolinhos.create(600, 400, 'planeta');
+            this.platform_tijolinhos.create(200, 350, 'planeta');
+            this.platform_tijolinhos.create(50, 250, 'planeta');
+            this.platform_tijolinhos.create(450, 220, 'planeta');
+            this.platform_tijolinhos.create(750, 200, 'planeta');
+
+            this.player = this.physics.add.sprite(100, 450, 'personagem');
+            this.player.setBounce(0.2);
+            this.player.setCollideWorldBounds(true);
+            this.physics.add.collider(this.player, this.platform_tijolinhos);
+
+            this.anims.create({
+                key: 'left',
+                frames: this.anims.generateFrameNumbers('personagem', { start: 0, end: 3 }),
+                frameRate: 10,
+                repeat: -1
+            });
+
+            this.anims.create({
+                key: 'turn',
+                frames: [ { key: 'personagem', frame: 4 } ],
+                frameRate: 20
+            });
+
+            this.anims.create({
+                key: 'right',
+                frames: this.anims.generateFrameNumbers('personagem', { start: 5, end: 8 }),
+                frameRate: 10,
+                repeat: -1
+            });
+
+            this.stars = this.physics.add.group({
+                key: 'star',
+                repeat: 11,
+                setXY: { x: 12, y: 0, stepX: 70 }
+            });
+            
+            this.stars.children.iterate(function (child) {
+            
+                child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
+            
+            });
+            scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
+            this.physics.add.collider(this.stars, this.platform_tijolinhos);
+            this.physics.add.overlap(this.player, this.stars,collectStar, null, this);
         }
 
-        this.platforms = this.physics.add.staticGroup();
-        this.platforms.create(400, 568, 'ground').setScale(2).refreshBody();
-        this.platforms.create(600, 400, 'ground');
-        this.platforms.create(50, 250, 'ground');
-        this.platforms.create(750, 220, 'ground');
-
-        this.player = this.physics.add.sprite(100, 450, 'dude');
-        this.player.setBounce(0.2);
-        this.player.setCollideWorldBounds(true);
-        this.physics.add.collider(this.player, this.platforms);
-
+    
         this.anims.create({
             key: 'left',
-            frames: this.anims.generateFrameNumbers('dude', { start: 0, end: 3 }),
+            frames: this.anims.generateFrameNumbers('personagem', { start: 0, end: 3 }),
             frameRate: 10,
             repeat: -1
         });
 
         this.anims.create({
             key: 'turn',
-            frames: [ { key: 'dude', frame: 4 } ],
+            frames: [ { key: 'personagem', frame: 4 } ],
             frameRate: 20
         });
 
         this.anims.create({
             key: 'right',
-            frames: this.anims.generateFrameNumbers('dude', { start: 5, end: 8 }),
+            frames: this.anims.generateFrameNumbers('personagem', { start: 5, end: 8 }),
             frameRate: 10,
             repeat: -1
         });
@@ -146,7 +226,7 @@ function collectStar (player, star)
         
         });
         scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
-        this.physics.add.collider(this.stars, this.platforms);
+        this.physics.add.collider(this.stars, this.platform_tijolinhos);
         this.physics.add.overlap(this.player, this.stars,collectStar, null, this);
     }
 }

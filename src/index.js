@@ -19,6 +19,9 @@ var config = {
 };
 
 var game = new Phaser.Game(config);
+var score = 0;
+var scoreText;
+
 
 function preload ()
 {
@@ -79,13 +82,19 @@ function create ()
         child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
     
     });
+    scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
     this.physics.add.collider(this.stars, this.platforms);
-    this.physics.add.overlap(this.player, this.stars, collectStar, null, this);
+    this.physics.add.overlap(this.player, this.stars,collectStar, null, this);
+
+   
 }
+
 
 function collectStar (player, star)
 {
     star.disableBody(true, true);
+    score += 10;
+    scoreText.setText('Score: ' + score);
 }
 
 function update ()
@@ -93,7 +102,7 @@ function update ()
     var cursors = this.input.keyboard.createCursorKeys();
     if (cursors.left.isDown)
     {
-        console.log("aqui");
+
         this.player.setVelocityX(-160);
 
         this.player.anims.play('left', true);

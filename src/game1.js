@@ -3,24 +3,24 @@ import Phaser from 'phaser';
 /* =======================
    IMPORTAÇÃO DOS ASSETS
 ======================= */
-import terraImg from './assets/terra.jpg';
-import skyImg from './assets/sky.jpg';
-import estrelasImg from './assets/estrelas.jpg';
-import espacoImg from './assets/espaco.jpg';
-import fimImg from './assets/fimDeJogo.jpg';
+import terraImg from './assets/game1/terra.jpg';
+import skyImg from './assets/game1/sky.jpg';
+import estrelasImg from './assets/game1/estrelas.jpg';
+import espacoImg from './assets/game1/espaco.jpg';
+import fimImg from './assets/game1/fimDeJogo.jpg';
 
-import groundImg from './assets/platform_tijolinho.png';
-import nuvemImg from './assets/nuvem.png';
-import sateliteImg from './assets/satelite.png';
-import fogueteImg from './assets/foguete.png';
-import planetaImg from './assets/planeta.png';
+import groundImg from './assets/game1/platform_tijolinho.png';
+import nuvemImg from './assets/game1/nuvem.png';
+import sateliteImg from './assets/game1/satelite.png';
+import fogueteImg from './assets/game1/foguete.png';
+import planetaImg from './assets/game1/planeta.png';
 
-import starImg from './assets/star.png';
-import chocolateImg from './assets/chocolate.png';
-import meteoroImg from './assets/meteoro.png';
-import opsImg from './assets/ops.png';
+import starImg from './assets/game1/star.png';
+import chocolateImg from './assets/game1/chocolate.png';
+import meteoroImg from './assets/game1/meteoro.png';
+import opsImg from './assets/game1/ops.png';
 
-import personagemImg from './assets/personagem.png';
+import personagemImg from './assets/game1/personagem.png';
 
 /* =======================
    CLASSE DO JOGO

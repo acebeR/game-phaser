@@ -1,250 +1,56 @@
-import Phaser from 'phaser';
+// src/index.js
+import { startGame } from './game1.js';
+import game1Img from './assets/game1.png';
 
-var config = {
-    type: Phaser.AUTO,
-    width: 800,
-    height: 600,
-    physics: {
-        default: 'arcade',
-        arcade: {
-            gravity: { y: 300 },
-            debug: false
-        }
-    },
-    scene: {
-        preload: preload,
-        create: create,
-        update: update
+const app = document.getElementById('app') || document.body;
+
+// Menu
+const menu = document.createElement('div');
+menu.id = 'menu';
+menu.style.display = 'flex';
+menu.style.flexDirection = 'column';
+menu.style.justifyContent = 'center';
+menu.style.alignItems = 'center';
+menu.style.height = '100vh';
+
+// Adiciona o menu ao DOM primeiro
+app.appendChild(menu);
+
+// Conteúdo do menu - apenas imagens clicáveis
+menu.innerHTML = `
+    <h1>🎮 Meu Site de Jogos</h1>
+    <div class="menu-buttons" style="display:flex; gap:20px;">
+        <img id="game1Btn" src="${game1Img}" alt="Plataforma Espacial" class="menu-img">
+        <img id="game2Btn" src="${game1Img}" alt="Atravessar o Rio" class="menu-img">
+    </div>
+`;
+
+// Adiciona o CSS para hover
+const style = document.createElement('style');
+style.innerHTML = `
+    .menu-img {
+        width: 80px;
+        height: 80px;
+        cursor: pointer;
+        transition: transform 0.2s;
     }
-};
-
-var game = new Phaser.Game(config);
-var score = 0;
-var scoreText;
-var plano = "terra";
-
-function preload ()
-{
-    // Fundo
-    this.load.image('terra', 'src/assets/terra.jpg');
-    this.load.image('sky', 'src/assets/sky.jpg');
-    this.load.image('estrelas', 'src/assets/estrelas.jpg');
-    this.load.image('espaco', 'src/assets/espaco.jpg');
-    this.load.image('fim', 'src/assets/fimDeJogo.jpg');
-    // Plataformas
-    this.load.image('ground', 'src/assets/platform_tijolinho.png');
-    this.load.image('ground_nuvem', 'src/assets/gound_nuvem.png');
-    this.load.image('nuvem', 'src/assets/nuvem.png');
-    this.load.image('satelite', 'src/assets/satelite.png');
-    this.load.image('foguete', 'src/assets/foguete.png');
-    this.load.image('ground_planeta', 'src/assets/gound_planeta.png');
-    this.load.image('planeta', 'src/assets/planeta.png');
-    // Premiação
-    this.load.image('star', 'src/assets/star.png');
-    this.load.image('chocolate', 'src/assets/chocolate.png');
-    this.load.image('meteoro', 'src/assets/meteoro.png');
-    this.load.image('ops', 'src/assets/ops.png');
-    // this.load.image('bomb', 'assets/bomb.png');
-    // Bonequinho
-    this.load.spritesheet('personagem','src/assets/personagem.png',{ frameWidth: 32, frameHeight: 48 });
-}
-
-function create ()
-{
-    this.add.image(400, 300, 'terra');
-
-    this.platform_tijolinhos = this.physics.add.staticGroup();
-    this.platform_tijolinhos.create(400, 568, 'ground').setScale(2).refreshBody();
-    this.platform_tijolinhos.create(600, 400, 'ground');
-    this.platform_tijolinhos.create(50, 220, 'ground');
-    this.platform_tijolinhos.create(800, 250, 'ground');
-
-
-    this.player = this.physics.add.sprite(100, 450, 'personagem');
-    this.player.setBounce(0.2);
-    this.player.setCollideWorldBounds(true);
-    this.physics.add.collider(this.player, this.platform_tijolinhos);
-
-    this.anims.create({
-        key: 'left',
-        frames: this.anims.generateFrameNumbers('personagem', { start: 0, end: 3 }),
-        frameRate: 10,
-        repeat: -1
-    });
-
-    this.anims.create({
-        key: 'turn',
-        frames: [ { key: 'personagem', frame: 4 } ],
-        frameRate: 20
-    });
-
-    this.anims.create({
-        key: 'right',
-        frames: this.anims.generateFrameNumbers('personagem', { start: 5, end: 8 }),
-        frameRate: 10,
-        repeat: -1
-    });
-
-    this.stars = this.physics.add.group({
-        key: 'chocolate',
-        repeat: 11,
-        setXY: { x: 12, y: 0, stepX: 70 }
-    });
-    
-    this.stars.children.iterate(function (child) {
-    
-        child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
-    
-    });
-    scoreText = this.add.text(16, 16, 'Pontuação: 0', { fontSize: '32px', fill: '#000' });
-
-    this.physics.add.collider(this.stars, this.platform_tijolinhos);
-    this.physics.add.overlap(this.player, this.stars,collectStar, null, this);
-
-   
-}
-
-
-function collectStar (player, star)
-{
-    star.disableBody(true, true);
-    score += 10;
-    scoreText.setText('Pontuação: ' + score);
-    // console.log('Plano:',plano);
-    // console.log('jogador:',this.player);
-
-    if(plano != 'espaco'){
-        if(score === 120){
-            if(plano === "terra"){
-                score = 0;
-                plano = "sky";
-                this.add.image(400, 300, 'sky');
-                this.platform_tijolinhos = this.physics.add.staticGroup();
-                this.platform_tijolinhos.create(400, 568, 'ground_nuvem').setScale(2).refreshBody();
-                this.platform_tijolinhos.create(500, 400, 'nuvem');
-                this.platform_tijolinhos.create(50, 250, 'nuvem');
-                this.platform_tijolinhos.create(750, 220, 'nuvem');
-
-                this.player = this.physics.add.sprite(100, 450, 'personagem');
-                this.player.setBounce(0.2);
-                this.player.setCollideWorldBounds(true);
-                this.physics.add.collider(this.player, this.platform_tijolinhos);
-
-                this.stars = this.physics.add.group({
-                    key: 'star',
-                    repeat: 11,
-                    setXY: { x: 12, y: 0, stepX: 70 }
-                });
-
-            }else
-            if(plano === "sky"){
-                score = 0;
-                plano = "estrelas";
-                this.add.image(400, 300, 'estrelas');
-                this.platform_tijolinhos = this.physics.add.staticGroup();
-                this.platform_tijolinhos.create(400, 568, 'satelite').setScale(2).refreshBody();
-                this.platform_tijolinhos.create(400, 400, 'foguete');
-                this.platform_tijolinhos.create(100, 250, 'foguete');
-                this.platform_tijolinhos.create(750, 220, 'foguete');
-
-                this.player = this.physics.add.sprite(100, 450, 'personagem');
-                this.player.setBounce(0.2);
-                this.player.setCollideWorldBounds(true);
-                this.physics.add.collider(this.player, this.platform_tijolinhos);
-
-                this.stars = this.physics.add.group({
-                    key: 'meteoro',
-                    repeat: 11,
-                    setXY: { x: 12, y: 0, stepX: 70 }
-                });
-            }else     
-            if(plano === "estrelas"){
-                score = 0;
-                plano = "espaco";
-                this.add.image(400, 300, 'espaco');
-
-                this.platform_tijolinhos = this.physics.add.staticGroup();
-                this.platform_tijolinhos.create(400, 568, 'ground_planeta').setScale(2).refreshBody();
-                this.platform_tijolinhos.create(600, 400, 'planeta');
-                this.platform_tijolinhos.create(200, 350, 'planeta');
-                this.platform_tijolinhos.create(50, 250, 'planeta');
-                this.platform_tijolinhos.create(450, 220, 'planeta');
-                this.platform_tijolinhos.create(750, 200, 'planeta');
-
-                
-                this.player = this.physics.add.sprite(100, 450, 'personagem');
-                this.player.setBounce(0.2);
-                this.player.setCollideWorldBounds(true);
-                this.physics.add.collider(this.player, this.platform_tijolinhos);
-
-                this.stars = this.physics.add.group({
-                    key: 'ops',
-                    repeat: 11,
-                    setXY: { x: 12, y: 0, stepX: 70 }
-                });
-            }
-
-        
-            this.anims.create({
-                key: 'left',
-                frames: this.anims.generateFrameNumbers('personagem', { start: 0, end: 3 }),
-                frameRate: 10,
-                repeat: -1
-            });
-
-            this.anims.create({
-                key: 'turn',
-                frames: [ { key: 'personagem', frame: 4 } ],
-                frameRate: 20
-            });
-
-            this.anims.create({
-                key: 'right',
-                frames: this.anims.generateFrameNumbers('personagem', { start: 5, end: 8 }),
-                frameRate: 10,
-                repeat: -1
-            });
-            
-            this.stars.children.iterate(function (child) {
-                child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
-            });
-            scoreText = this.add.text(16, 16, 'Pontuação: 0', { fontSize: '32px', fill: '#fff' });
-            this.physics.add.collider(this.stars, this.platform_tijolinhos);
-            this.physics.add.overlap(this.player, this.stars,collectStar, null, this);
-        }
-    }else{
-        if(score === 120){
-            this.add.image(400, 300, 'fim'); 
-        }
+    .menu-img:hover {
+        transform: scale(1.2);
     }
-}
+`;
+document.head.appendChild(style);
 
-function update ()
-{
-    var cursors = this.input.keyboard.createCursorKeys();
-    if (cursors.left.isDown)
-    {
+// Container do jogo
+const gameContainer = document.createElement('div');
+gameContainer.id = 'game-container';
+app.appendChild(gameContainer);
 
-        this.player.setVelocityX(-160);
+// Eventos
+document.getElementById('game1Btn').addEventListener('click', () => {
+    menu.style.display = 'none';
+    startGame(gameContainer);
+});
 
-        this.player.anims.play('left', true);
-    }
-    else if (cursors.right.isDown)
-    {
-        this.player.setVelocityX(160);
-
-        this.player.anims.play('right', true);
-    }
-    else
-    {
-        this.player.setVelocityX(0);
-
-        this.player.anims.play('turn');
-    }
-
-    if (cursors.up.isDown && this.player.body.touching.down)
-    {
-        this.player.setVelocityY(-330);
-    }
-
-}
+document.getElementById('game2Btn').addEventListener('click', () => {
+    alert('Jogo 2 ainda não implementado!');
+});

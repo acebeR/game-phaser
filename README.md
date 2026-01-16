@@ -7,6 +7,7 @@
 # Rodar
 - npm install
 -npm start
+- para dar o build (npm install gh-pages --save-dev)
 
 Rodando na porta `http://localhost:8080`
 
